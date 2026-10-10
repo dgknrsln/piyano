@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Piyano Porte & Nota Öğrenme - Do'dan Si'ye Flash Card Uygulaması</title>
+  <meta name="description" content="Piyano öğrenmeye yeni başlayanlar için interaktif porte (dizek) ve nota flashcard uygulaması. Do'dan Si'ye notaları görerek, dinleyerek ve çalarak öğrenin.">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Music&family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  
+  <!-- CSS Stylesheets -->
+  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="styles/staff.css">
+  <link rel="stylesheet" href="styles/flashcard.css">
+  <link rel="stylesheet" href="styles/piano.css">
+  <link rel="stylesheet" href="styles/quiz.css">
+</head>
+<body>
+  <div class="app-background">
+    <div class="glow-orb glow-orb-1"></div>
+    <div class="glow-orb glow-orb-2"></div>
+    <div class="glow-orb glow-orb-3"></div>
+  </div>
+
+  <div class="app-container">
+    <!-- Header / Navbar -->
+    <header class="app-header">
+      <div class="brand">
+        <div class="brand-icon">
+          <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="32" height="32" rx="8" fill="url(#brandGrad)"/>
+            <path d="M8 8H24V24H8V8Z" fill="#12151E"/>
+            <path d="M11 8V18M15 8V18M19 8V18M23 8V18" stroke="#F59E0B" stroke-width="1.5" stroke-linecap="round"/>
+            <rect x="12.5" y="8" width="3" height="7" rx="1.5" fill="#F59E0B"/>
+            <rect x="18.5" y="8" width="3" height="7" rx="1.5" fill="#F59E0B"/>
+            <defs>
+              <linearGradient id="brandGrad" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#F59E0B"/>
+                <stop offset="1" stop-color="#D97706"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <h1 class="brand-title">Piyano<span>Nota</span></h1>
+          <p class="brand-subtitle">Porte & Dizek Rehberi</p>
+        </div>
+      </div>
+
+      <!-- User Stats Badges -->
+      <div class="header-stats">
+        <div class="stat-badge" title="Mevcut Öğrenme Serisi">
+          <span class="stat-icon">🔥</span>
+          <div class="stat-info">
+            <span class="stat-value" id="streak-counter">1</span>
+            <span class="stat-label">Gün Seri</span>
+          </div>
+        </div>
+
+        <div class="stat-badge" title="Kazanılan Deneyim Puanı">
+          <span class="stat-icon">⭐</span>
+          <div class="stat-info">
+            <span class="stat-value" id="xp-counter">0</span>
+            <span class="stat-label">XP</span>
+          </div>
+        </div>
+
+        <div class="stat-badge" title="Öğrenilen Notalar">
+          <span class="stat-icon">🎵</span>
+          <div class="stat-info">
+            <span class="stat-value" id="mastered-counter">0 / 11</span>
+            <span class="stat-label">Öğrenildi</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Settings / Quick Controls -->
+      <div class="header-actions">
+        <button id="theme-toggle-btn" class="action-btn toggle-btn" title="Temayı Değiştir (Açık / Koyu)">
+          <span id="theme-icon">☀️</span>
+          <span class="toggle-val" id="theme-label">Açık</span>
+        </button>
+
+        <button id="notation-toggle-btn" class="action-btn toggle-btn" title="Nota İsimlendirme Formatı: Do-Re-Mi veya C-D-E">
+          <span class="toggle-label">Nota:</span>
+          <span class="toggle-val" id="notation-system-label">Do-Re-Mi</span>
+        </button>
+
+        <button id="sound-toggle-btn" class="action-btn icon-only" title="Sesi Aç/Kapat">
+          <svg id="sound-icon-on" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+          </svg>
+          <svg id="sound-icon-off" class="hidden" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <line x1="23" y1="9" x2="17" y2="15"></line>
+            <line x1="17" y1="9" x2="23" y2="15"></line>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="nav-tabs" aria-label="Ana Menü">
+      <button class="tab-btn active" data-tab="flashcards" id="tab-flashcards">
+        <span class="tab-icon">🎴</span>
+        <span class="tab-text">Flash Kartlar</span>
+        <span class="tab-indicator"></span>
+      </button>
+      <button class="tab-btn" data-tab="quiz" id="tab-quiz">
+        <span class="tab-icon">🎯</span>
+        <span class="tab-text">Alıştırma & Test</span>
+        <span class="tab-indicator"></span>
+      </button>
+      <button class="tab-btn" data-tab="piano" id="tab-piano">
+        <span class="tab-icon">🎹</span>
+        <span class="tab-text">Piyano Keşif</span>
+        <span class="tab-indicator"></span>
+      </button>
+      <button class="tab-btn" data-tab="guide" id="tab-guide">
+        <span class="tab-icon">📖</span>
+        <span class="tab-text">Dizek Rehberi</span>
+        <span class="tab-indicator"></span>
+      </button>
+    </nav>
+
+    <!-- MAIN CONTENT SECTIONS -->
+    <main class="app-main">
+
+      <!-- ============================================== -->
+      <!-- SECTION 1: FLASHCARDS (KARTLARLA ÖĞRENME)      -->
+      <!-- ============================================== -->
+      <section id="view-flashcards" class="view-section active">
+        <div class="view-header">
+          <div class="view-title-group">
+            <span class="badge-topic">Bölüm 1</span>
+            <h2>Dizek ve Notalar (11 Temel Nota)</h2>
+            <p>Dizek altındaki Orta Do & Re ile 5 çizgi ve 4 aralıktaki notaların portedeki yerini, sesini ve piyano tuşunu keşfedin.</p>
+          </div>
+
+          <div class="flashcard-controls-top">
+            <div class="mode-selector">
+              <button class="mode-chip active" data-filter="all">Tümü (11 Nota: Do-Fa)</button>
+              <button class="mode-chip" data-filter="ledger">Dizek Altı (Do & Re)</button>
+              <button class="mode-chip" data-filter="lines">5 Çizgi (Mi-Sol-Si-Re-Fa)</button>
+              <button class="mode-chip" data-filter="spaces">4 Aralık (Fa-La-Do-Mi)</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="flashcard-arena">
+          <!-- Progress Bar -->
+          <div class="card-progress-wrapper">
+            <div class="card-progress-bar">
+              <div class="progress-fill" id="card-progress-fill" style="width: 14%;"></div>
+            </div>
+            <div class="card-progress-text">
+              <span id="current-card-idx">1</span> / <span id="total-cards-count">7</span> Nota
+            </div>
+          </div>
+
+          <!-- The 3D Flashcard Element -->
+          <div class="flashcard-wrapper" id="flashcard-wrapper">
+            <div class="flashcard" id="main-flashcard">
+              
+              <!-- CARD FRONT: Porte & Staff Visual -->
+              <div class="card-face card-front">
+                <div class="card-badge-top">
+                  <span class="clef-indicator">🎼 Sol Anahtarı (Treble)</span>
+                  <span class="hint-pill">Tıkla veya Boşluk Tuşuna Bas ↺</span>
+                </div>
+
+                <!-- Interactive Staff Canvas/SVG Container -->
+                <div class="staff-container" id="card-staff-container">
+                  <!-- Injected by staff-renderer.js -->
+                </div>
+
+                <div class="card-prompt">
+                  <p class="question-text">Bu porte üzerindeki nota hangisidir?</p>
+                </div>
+
+                <div class="card-front-actions">
+                  <button class="listen-btn" id="card-listen-btn" title="Notanın sesini dinle">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                      <path d="M8 5v14l11-7z"/>
+                    </svg>
+                    <span>Sesi Dinle</span>
+                  </button>
+                  <button class="flip-hint-btn" id="card-flip-btn">
+                    <span>Cevabı Gör</span>
+                    <span class="flip-icon">↻</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- CARD BACK: Note Details, Piano Key, Explanation -->
+              <div class="card-face card-back">
+                <div class="card-back-header">
+                  <div class="note-name-badge">
+                    <span class="note-main-name" id="back-note-name">DO</span>
+                    <span class="note-alt-name" id="back-note-alt">(C4 - Orta Do)</span>
+                  </div>
+                  <button class="mini-listen-btn" id="back-listen-btn" title="Tekrar Çal">
+                    🔊
+                  </button>
+                </div>
+
+                <div class="card-details-grid">
+                  <!-- Porte Position Card -->
+                  <div class="detail-box">
+                    <div class="detail-label">📍 Portedeki Konumu</div>
+                    <div class="detail-value" id="back-porte-pos">1. Çizginin altında ek çizgide</div>
+                    <div class="detail-type-badge" id="back-porte-type">Ek Çizgi (Ledger Line)</div>
+                  </div>
+
+                  <!-- Mnemonic / Memory Trick -->
+                  <div class="detail-box highlight">
+                    <div class="detail-label">💡 Akılda Kalıcı İpucu</div>
+                    <div class="detail-value" id="back-mnemonic">
+                      Kendi küçük çizgisine oturmuş "göbekli" notadır. Klavyede iki siyah tuşun hemen solundadır!
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Mini Piano Representation -->
+                <div class="mini-piano-preview">
+                  <div class="preview-label">🎹 Piyanodaki Yeri</div>
+                  <div class="mini-piano-container" id="mini-piano-container">
+                    <!-- Injected by piano component -->
+                  </div>
+                </div>
+
+                <div class="card-back-actions">
+                  <button class="reflip-btn" id="card-reflip-btn">
+                    <span>↺ Porteyi Tekrar İncele</span>
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Bottom Navigation & Mastery Buttons -->
+          <div class="flashcard-footer-nav">
+            <button class="nav-arrow-btn" id="prev-card-btn" title="Önceki Nota">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5">
+                <polyline points="15 18 9 12 15 6"></polyline>
+              </svg>
+              <span>Önceki</span>
+            </button>
+
+            <!-- Learning feedback buttons -->
+            <div class="feedback-actions">
+              <button class="feedback-btn btn-repeat" id="btn-mark-repeat" title="Bu notayı daha çok çalışmalıyım">
+                <span class="f-icon">🔄</span>
+                <span>Tekrar Et</span>
+              </button>
+              <button class="feedback-btn btn-mastered" id="btn-mark-mastered" title="Bu notayı iyi biliyorum!">
+                <span class="f-icon">✨</span>
+                <span>Öğrendim!</span>
+              </button>
+            </div>
+
+            <button class="nav-arrow-btn" id="next-card-btn" title="Sonraki Nota">
+              <span>Sonraki</span>
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5">
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Quick Note Selector Bar -->
+          <div class="quick-note-pills" id="quick-note-pills">
+            <!-- DO, RE, MI, FA, SOL, LA, SI pills -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================== -->
+      <!-- SECTION 2: QUIZ & PRACTICE (ALIŞTIRMA MODU)     -->
+      <!-- ============================================== -->
+      <section id="view-quiz" class="view-section">
+        <div class="quiz-container">
+          
+          <!-- Quiz Header / HUD -->
+          <div class="quiz-hud">
+            <div class="hud-item score-hud">
+              <span class="hud-label">PUAN</span>
+              <span class="hud-val" id="quiz-score">0</span>
+            </div>
+
+            <div class="hud-item streak-hud">
+              <span class="hud-label">COMBO</span>
+              <div class="streak-pill">
+                <span class="fire-icon">🔥</span>
+                <span id="quiz-streak">x0</span>
+              </div>
+            </div>
+
+            <div class="hud-item timer-hud" id="quiz-timer-box">
+              <span class="hud-label">SÜRE</span>
+              <span class="hud-val timer-text" id="quiz-timer">60s</span>
+            </div>
+
+            <div class="hud-item lives-hud">
+              <span class="hud-label">HAKLAR</span>
+              <div class="lives-hearts" id="quiz-lives">
+                <span class="heart active">❤️</span>
+                <span class="heart active">❤️</span>
+                <span class="heart active">❤️</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Mode Picker for Quiz -->
+          <div class="quiz-mode-switch">
+            <span class="switch-label">Cevaplama Yöntemi:</span>
+            <div class="button-group">
+              <button class="switch-btn active" data-input-mode="buttons" id="quiz-mode-buttons">
+                🔘 Şıklarla (Butonlar)
+              </button>
+              <button class="switch-btn" data-input-mode="piano" id="quiz-mode-piano">
+                🎹 Piyano Tuşlarıyla
+              </button>
+            </div>
+          </div>
+
+          <!-- Quiz Question Card -->
+          <div class="quiz-card">
+            <div class="quiz-question-header">
+              <span class="q-tag">Soru <span id="quiz-q-num">1</span> / <span id="quiz-q-total">11</span></span>
+              <button class="quiz-sound-repeat" id="quiz-sound-repeat-btn" title="Notayı dinle">
+                🔊 Notayı Dinle
+              </button>
+            </div>
+
+            <div class="quiz-staff-display" id="quiz-staff-container">
+              <!-- Staff rendering of target note -->
+            </div>
+
+            <p class="quiz-prompt-text">Portede gösterilen bu nota hangisidir?</p>
+
+            <!-- Feedback Message Banner -->
+            <div class="quiz-feedback-banner hidden" id="quiz-feedback-banner">
+              <div class="feedback-icon" id="feedback-icon">✓</div>
+              <div class="feedback-message" id="feedback-message">Harika! Doğru Cevap: DO (C4)</div>
+            </div>
+
+            <!-- Answer Input Method 1: Multiple Choice Buttons -->
+            <div class="quiz-options-grid" id="quiz-options-grid">
+              <!-- Injected dynamically: 4 option buttons -->
+            </div>
+
+            <!-- Answer Input Method 2: Interactive Piano Keys Input -->
+            <div class="quiz-piano-input hidden" id="quiz-piano-input">
+              <p class="piano-instruction">Doğru piyano tuşuna dokunun veya bilgisayar klavyesini kullanın:</p>
+              <div class="quiz-piano-wrapper" id="quiz-piano-wrapper">
+                <!-- Mini responsive piano keyboard -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Quiz Action / Restart Footer -->
+          <div class="quiz-footer">
+            <button class="quiz-action-btn secondary" id="quiz-reset-btn">
+              🔄 Yeniden Başlat
+            </button>
+            <div class="keyboard-hints">
+              <span class="kbd-tip">İpucu: Klavyenizden 1-4 tuşlarına veya A-S-D-F-G-H-J tuşlarına basabilirsiniz.</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Quiz Completion Modal -->
+        <div class="modal-overlay hidden" id="quiz-result-modal">
+          <div class="modal-card">
+            <div class="modal-confetti" id="modal-confetti"></div>
+            <div class="modal-badge-trophy" id="modal-trophy">🏆</div>
+            <h3 class="modal-title" id="modal-title">Tebrikler! Testi Tamamladınız</h3>
+            <p class="modal-desc" id="modal-desc">Portedeki temel notaları tanıma konusunda harika bir performans sergilediniz!</p>
+
+            <div class="modal-stats-grid">
+              <div class="m-stat-box">
+                <span class="m-stat-val" id="modal-final-score">850</span>
+                <span class="m-stat-lbl">Toplam Puan</span>
+              </div>
+              <div class="m-stat-box">
+                <span class="m-stat-val" id="modal-accuracy">90%</span>
+                <span class="m-stat-lbl">Doğruluk</span>
+              </div>
+              <div class="m-stat-box">
+                <span class="m-stat-val" id="modal-best-streak">8</span>
+                <span class="m-stat-lbl">En Uzun Seri</span>
+              </div>
+              <div class="m-stat-box">
+                <span class="m-stat-val" id="modal-xp-gained">+120</span>
+                <span class="m-stat-lbl">Kazanılan XP</span>
+              </div>
+            </div>
+
+            <div class="modal-actions">
+              <button class="btn-primary" id="modal-play-again-btn">Tekrar Oyna 🎯</button>
+              <button class="btn-secondary" id="modal-go-flashcards-btn">Kartlara Dön 🎴</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================== -->
+      <!-- SECTION 3: INTERACTIVE PIANO & STAFF EXPLORER  -->
+      <!-- ============================================== -->
+      <section id="view-piano" class="view-section">
+        <div class="explorer-container">
+          <div class="explorer-header">
+            <div class="explorer-info">
+              <h2>🎹 Canlı Piyano & Porte Simülatörü</h2>
+              <p>Piyano tuşlarına basın veya bilgisayar klavyenizi kullanın. Bastığınız her nota anında hem çalınacak hem de portedeki yeri gerçek zamanlı çizilecektir.</p>
+            </div>
+
+            <div class="explorer-toggles">
+              <label class="toggle-control">
+                <input type="checkbox" id="toggle-key-labels" checked>
+                <span class="toggle-slider"></span>
+                <span class="toggle-text">Tuş İsimlerini Göster</span>
+              </label>
+
+              <label class="toggle-control">
+                <input type="checkbox" id="toggle-staff-helper" checked>
+                <span class="toggle-slider"></span>
+                <span class="toggle-text">Çizgi/Aralık İpucu</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Realtime Staff Sync Display -->
+          <div class="explorer-sync-display">
+            <div class="sync-staff-box" id="explorer-staff-container">
+              <!-- Dynamically drawn staff with current active note -->
+            </div>
+
+            <div class="active-note-info-card" id="explorer-note-info">
+              <div class="active-note-title" id="exp-note-name">DO (C4)</div>
+              <div class="active-note-freq" id="exp-note-freq">261.63 Hz • Orta Do</div>
+              <div class="active-note-detail" id="exp-note-detail">
+                Portenin 1. çizgisinin altındaki ilk ek çizgide (ledger line) bulunur.
+              </div>
+            </div>
+          </div>
+
+          <!-- Full Width Realistic Piano Keyboard -->
+          <div class="piano-stage">
+            <div class="piano-case">
+              <div class="piano-brand-plate">ANTIGRAVITY CONCERT GRAND</div>
+              <div class="piano-keys-wrapper" id="main-piano-keyboard">
+                <!-- Injected by piano-keyboard.js -->
+              </div>
+            </div>
+
+            <!-- Keyboard shortcut map guide -->
+            <div class="piano-keyboard-guide">
+              <div class="guide-title">⌨️ Bilgisayar Klavyesi Eşleşmesi:</div>
+              <div class="guide-keys-list">
+                <span class="guide-key"><kbd>A</kbd> Do (C4 - Orta Do)</span>
+                <span class="guide-key"><kbd>W</kbd> Do#</span>
+                <span class="guide-key"><kbd>S</kbd> Re (D4)</span>
+                <span class="guide-key"><kbd>E</kbd> Re#</span>
+                <span class="guide-key"><kbd>D</kbd> Mi (E4 - 1. Çizgi)</span>
+                <span class="guide-key"><kbd>F</kbd> Fa (F4 - 1. Aralık)</span>
+                <span class="guide-key"><kbd>T</kbd> Fa#</span>
+                <span class="guide-key"><kbd>G</kbd> Sol (G4 - 2. Çizgi)</span>
+                <span class="guide-key"><kbd>Y</kbd> Sol#</span>
+                <span class="guide-key"><kbd>H</kbd> La (A4 - 2. Aralık)</span>
+                <span class="guide-key"><kbd>U</kbd> La#</span>
+                <span class="guide-key"><kbd>J</kbd> Si (B4 - 3. Çizgi)</span>
+                <span class="guide-key"><kbd>K</kbd> Do (C5 - 3. Aralık)</span>
+                <span class="guide-key"><kbd>L</kbd> Re (D5 - 4. Çizgi)</span>
+                <span class="guide-key"><kbd>Ş</kbd> Mi (E5 - 4. Aralık)</span>
+                <span class="guide-key"><kbd>İ</kbd> Fa (F5 - 5. Çizgi)</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ============================================== -->
+      <!-- SECTION 4: THEORY & MNEMONIC GUIDE (REHBER)    -->
+      <!-- ============================================== -->
+      <section id="view-guide" class="view-section">
+        <div class="guide-container">
+          <div class="guide-hero">
+            <h2>🎼 Porte (Dizek) ve Nota Okuma Temelleri</h2>
+            <p>Porte, notaların yazıldığı 5 paralel yatay çizgi ve 4 aralıktan oluşan ızgaradır. Çizgiler ve aralıklar daima <strong>aşağıdan yukarıya</strong> doğru (1'den 5'e) sayılır.</p>
+          </div>
+
+          <!-- Interactive Guide Blocks -->
+          <div class="guide-cards-grid">
+            
+            <!-- Lines Card (Çizgiler) -->
+            <div class="theory-card">
+              <div class="theory-card-header">
+                <div class="theory-icon">➖</div>
+                <div>
+                  <h3>Porte Çizgilerindeki Notalar</h3>
+                  <span class="theory-sub">Aşağıdan Yukarıya 5 Çizgi</span>
+                </div>
+              </div>
+
+              <div class="theory-staff-visual" id="guide-lines-staff">
+                <!-- SVG Staff with lines highlighted -->
+              </div>
+
+              <div class="theory-mnemonic-box">
+                <div class="mn-label">💡 Türkçe Ezberleme Tekerlemesi:</div>
+                <div class="mn-phrase">
+                  <strong>M</strong>i - <strong>S</strong>ol - <strong>S</strong>i - <strong>R</strong>e - <strong>F</strong>a
+                </div>
+                <div class="mn-sentence">
+                  "<strong>M</strong>isketli <strong>S</strong>ultan <strong>S</strong>imitçi <strong>R</strong>ecep'e <strong>F</strong>ırlattı"
+                </div>
+                <div class="mn-latin">İngilizce / C-D-E: <strong>E - G - B - D - F</strong> ("Every Good Boy Does Fine")</div>
+              </div>
+
+              <ul class="note-pill-list">
+                <li><span class="p-dot line-1"></span><strong>1. Çizgi:</strong> Mi (E4)</li>
+                <li><span class="p-dot line-2"></span><strong>2. Çizgi:</strong> Sol (G4) - <em>Sol anahtarının başladığı yer</em></li>
+                <li><span class="p-dot line-3"></span><strong>3. Çizgi:</strong> Si (B4)</li>
+                <li><span class="p-dot line-4"></span><strong>4. Çizgi:</strong> Re (D5)</li>
+                <li><span class="p-dot line-5"></span><strong>5. Çizgi:</strong> Fa (F5)</li>
+              </ul>
+            </div>
+
+            <!-- Spaces Card (Aralıklar) -->
+            <div class="theory-card">
+              <div class="theory-card-header">
+                <div class="theory-icon">▫️</div>
+                <div>
+                  <h3>Porte Aralıklarındaki Notalar</h3>
+                  <span class="theory-sub">Aşağıdan Yukarıya 4 Aralık</span>
+                </div>
+              </div>
+
+              <div class="theory-staff-visual" id="guide-spaces-staff">
+                <!-- SVG Staff with spaces highlighted -->
+              </div>
+
+              <div class="theory-mnemonic-box">
+                <div class="mn-label">💡 Türkçe Ezberleme Tekerlemesi:</div>
+                <div class="mn-phrase">
+                  <strong>F</strong>a - <strong>L</strong>a - <strong>D</strong>o - <strong>M</strong>i
+                </div>
+                <div class="mn-sentence">
+                  "<strong>F</strong>ALCI <strong>D</strong>O<strong>M</strong>UZ" ya da "<strong>F</strong>ındık <strong>L</strong>eziz <strong>D</strong>oğal <strong>M</strong>eyve"
+                </div>
+                <div class="mn-latin">İngilizce / C-D-E: <strong>F - A - C - E</strong> ("FACE" - Yüz kelimesi)</div>
+              </div>
+
+              <ul class="note-pill-list">
+                <li><span class="p-dot space-1"></span><strong>1. Aralık:</strong> Fa (F4)</li>
+                <li><span class="p-dot space-2"></span><strong>2. Aralık:</strong> La (A4)</li>
+                <li><span class="p-dot space-3"></span><strong>3. Aralık:</strong> Do (C5)</li>
+                <li><span class="p-dot space-4"></span><strong>4. Aralık:</strong> Mi (E5)</li>
+              </ul>
+            </div>
+
+            <!-- Ledger Lines / Orta Do Card -->
+            <div class="theory-card full-width">
+              <div class="theory-card-header">
+                <div class="theory-icon">📍</div>
+                <div>
+                  <h3>Orta Do (C4) ve Re (D4) - Ek Çizgiler</h3>
+                  <span class="theory-sub">Portenin Altındaki Komşu Notalar</span>
+                </div>
+              </div>
+
+              <div class="theory-content-two-col">
+                <div class="theory-col">
+                  <h4>🔴 Orta Do (C4 / Middle C)</h4>
+                  <p>Piyanoda tam ortadaki Do notasıdır. Portenin 5 ana çizgisine sığmadığı için altına çizilen küçük bir <strong>ek çizgi</strong> (çizgili şapka) üzerine oturur.</p>
+                  <div class="rule-box">
+                    <strong>Kural:</strong> İki siyah tuşun solundaki beyaz tuştur.
+                  </div>
+                </div>
+
+                <div class="theory-col">
+                  <h4>🟡 Re (D4)</h4>
+                  <p>Orta Do ile 1. çizgi (Mi) arasında, 1. çizginin <strong>tam altındaki boşlukta</strong> asılı durur. Ek çizgi gerektirmez.</p>
+                  <div class="rule-box">
+                    <strong>Kural:</strong> İki siyah tuşun tam ortasındaki beyaz tuştur.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- All Notes Table (Do'dan Si'ye) -->
+            <div class="theory-card full-width">
+              <div class="theory-card-header">
+                <div class="theory-icon">📋</div>
+                <div>
+                  <h3>Do'dan Si'ye Özet Tablosu</h3>
+                  <span class="theory-sub">1. Oktav Notaları Karşılaştırmalı Tablo</span>
+                </div>
+              </div>
+
+              <div class="notes-table-container">
+                <table class="notes-summary-table">
+                  <thead>
+                    <tr>
+                      <th>Solfej</th>
+                      <th>Anglo-Sakson</th>
+                      <th>Portedeki Yeri</th>
+                      <th>Konum Tipi</th>
+                      <th>Frekans</th>
+                      <th>Piyano Konumu</th>
+                      <th>Dinle</th>
+                    </tr>
+                  </thead>
+                  <tbody id="theory-table-body">
+                    <!-- Injected by notes-data.js -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <p>Piyano Nota & Porte Öğrenme Platformu • Web Audio API & SVG Destekli</p>
+    </footer>
+  </div>
+
+  <!-- Audio Context Activation Banner (if needed) -->
+  <div class="audio-resume-toast hidden" id="audio-toast">
+    <span>🔊 Ses motorunu başlatmak için sayfada herhangi bir yere tıklayın</span>
+  </div>
+
+  <!-- JavaScript Modules -->
+  <script src="js/notes-data.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/staff-renderer.js"></script>
+  <script src="js/piano-keyboard.js"></script>
+  <script src="js/flashcards.js"></script>
+  <script src="js/quiz.js"></script>
+  <script src="js/guide.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

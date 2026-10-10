@@ -1,0 +1,146 @@
+/* ==========================================================================
+   STAFF / PORTE (DİZEK) SVG & COMPONENT STYLING
+   Precision Vector Music Notation Rendering with Light/Dark Theme Support
+   ========================================================================== */
+
+.staff-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1.5rem 1rem;
+  background: var(--staff-bg);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--staff-border);
+  position: relative;
+  overflow: hidden;
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.03);
+}
+
+.staff-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent-gold), transparent);
+}
+
+.staff-svg {
+  width: 100%;
+  max-width: 480px;
+  height: auto;
+  min-height: 170px;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.08));
+  overflow: visible;
+}
+
+/* Staff Lines */
+.staff-line {
+  stroke: var(--staff-line-color);
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  transition: stroke var(--transition-normal);
+}
+
+.staff-line.highlighted {
+  stroke: var(--accent-gold);
+  stroke-width: 3.8;
+  filter: drop-shadow(0 0 6px var(--accent-amber-glow));
+}
+
+/* Ledger Lines (Ek Çizgiler - e.g. Orta Do) */
+.ledger-line {
+  stroke: var(--staff-ledger-color);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  transition: stroke var(--transition-normal);
+}
+
+.ledger-line.active {
+  stroke: var(--accent-gold);
+  stroke-width: 3.8;
+  filter: drop-shadow(0 0 8px var(--accent-amber-glow));
+}
+
+/* Clef (Sol Anahtarı) */
+.clef-symbol {
+  fill: var(--text-primary);
+  opacity: 0.95;
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.15));
+  transition: transform var(--transition-normal), fill var(--transition-normal);
+}
+
+/* Note Head & Stem */
+.note-group {
+  cursor: pointer;
+}
+
+.note-head {
+  fill: var(--accent-gold);
+  stroke: var(--accent-gold-dark);
+  stroke-width: 1.5;
+  filter: drop-shadow(0 0 8px rgba(217, 119, 6, 0.4));
+  transition: fill var(--transition-fast), stroke var(--transition-fast);
+}
+
+.note-stem {
+  stroke: var(--text-primary);
+  stroke-width: 2.6;
+  stroke-linecap: round;
+}
+
+/* Note Glow Ring Animation */
+.note-glow-pulse {
+  animation: notePulse 2s ease-in-out infinite alternate;
+}
+
+@keyframes notePulse {
+  0% {
+    r: 18;
+    opacity: 0.35;
+  }
+  100% {
+    r: 26;
+    opacity: 0.08;
+  }
+}
+
+/* Line / Space Reference Markers */
+.staff-guide-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 800;
+  fill: var(--text-muted);
+  letter-spacing: 0.04em;
+  user-select: none;
+}
+
+.staff-guide-label.active {
+  fill: var(--accent-gold);
+  font-weight: 800;
+}
+
+.staff-note-label {
+  font-family: var(--font-main);
+  font-size: 15px;
+  font-weight: 800;
+  fill: var(--text-primary);
+  text-anchor: middle;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
+}
+
+/* Enter Note Animation (Pure opacity fade to avoid SVG coordinate displacement) */
+.note-enter-animate {
+  animation: noteFadeIn 0.25s ease-out forwards;
+}
+
+@keyframes noteFadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}

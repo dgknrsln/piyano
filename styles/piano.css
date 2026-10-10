@@ -1,0 +1,390 @@
+/* ==========================================================================
+   PIANO KEYBOARD & LIVE EXPLORER STYLES
+   Realistic Ivory & Ebony Key Physics, Luxury Grand Piano Case
+   ========================================================================== */
+
+/* Explorer Container Layout */
+.explorer-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.explorer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.explorer-info h2 {
+  font-family: var(--font-main);
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
+}
+
+.explorer-info p {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  max-width: 650px;
+}
+
+.explorer-toggles {
+  display: flex;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.toggle-control {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.toggle-control input[type="checkbox"] {
+  display: none;
+}
+
+.toggle-slider {
+  width: 36px;
+  height: 20px;
+  background: var(--badge-border);
+  border-radius: var(--radius-full);
+  position: relative;
+  transition: var(--transition-fast);
+}
+
+.toggle-slider::before {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  background: #FFF;
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  transition: var(--transition-fast);
+}
+
+.toggle-control input:checked + .toggle-slider {
+  background: var(--accent-gold);
+}
+
+.toggle-control input:checked + .toggle-slider::before {
+  transform: translateX(16px);
+}
+
+.toggle-text {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+/* Realtime Staff & Note Info Grid */
+.explorer-sync-display {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 1.25rem;
+  background: var(--bg-surface);
+  border: 1px solid var(--bg-card-border);
+  border-radius: var(--radius-xl);
+  padding: 1.25rem;
+  box-shadow: var(--shadow-md);
+}
+
+@media (max-width: 768px) {
+  .explorer-sync-display {
+    grid-template-columns: 1fr;
+  }
+}
+
+.sync-staff-box {
+  background: var(--staff-bg);
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--staff-border);
+  min-height: 180px;
+}
+
+.active-note-info-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--bg-card-border);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  position: relative;
+}
+
+.active-note-title {
+  font-family: var(--font-main);
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--accent-gold-dark);
+  line-height: 1.1;
+}
+
+.active-note-freq {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--accent-cyan);
+  margin-top: 0.25rem;
+  font-weight: 700;
+}
+
+.active-note-detail {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  margin-top: 0.75rem;
+  line-height: 1.5;
+  font-weight: 500;
+}
+
+/* Piano Stage & Case */
+.piano-stage {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.piano-case {
+  background: linear-gradient(180deg, #2D3748 0%, #1A202C 100%);
+  border: 2px solid #4A5568;
+  border-top: 4px solid #D97706;
+  border-radius: var(--radius-lg);
+  padding: 1.25rem 1.25rem 1rem;
+  box-shadow: 0 15px 40px rgba(15, 23, 42, 0.2), inset 0 2px 4px rgba(255, 255, 255, 0.15);
+  position: relative;
+  overflow-x: auto;
+}
+
+.piano-brand-plate {
+  text-align: center;
+  font-family: var(--font-main);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.3em;
+  color: #FCD34D;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+  margin-bottom: 0.85rem;
+  text-transform: uppercase;
+  user-select: none;
+}
+
+/* Piano Keys Layout */
+.piano-keys-wrapper {
+  display: flex;
+  position: relative;
+  justify-content: center;
+  user-select: none;
+  touch-action: manipulation;
+  min-width: 580px;
+}
+
+/* White Key (Ivory) */
+.piano-key-white {
+  position: relative;
+  width: 54px;
+  height: 200px;
+  background: linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 70%, #E2E8F0 100%);
+  border: 1px solid #CBD5E1;
+  border-bottom: 5px solid #94A3B8;
+  border-radius: 0 0 6px 6px;
+  cursor: pointer;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  padding-bottom: 12px;
+  transition: all 0.08s ease;
+  box-shadow: inset 0 1px 0 #FFF, 0 4px 6px rgba(0, 0, 0, 0.25);
+}
+
+.piano-key-white:hover {
+  background: linear-gradient(180deg, #FFFFFF 0%, #F1F5F9 70%, #E0F2FE 100%);
+}
+
+.piano-key-white.active, .piano-key-white:active {
+  background: linear-gradient(180deg, #FEF3C7 0%, #F59E0B 100%);
+  border-bottom-width: 1px;
+  transform: translateY(4px);
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.3), 0 0 18px var(--accent-amber-glow);
+}
+
+/* Black Key (Ebony) */
+.piano-key-black {
+  position: absolute;
+  top: 0;
+  width: 32px;
+  height: 125px;
+  background: linear-gradient(180deg, #2D3748 0%, #1A202C 60%, #0F172A 100%);
+  border: 1px solid #000;
+  border-bottom: 5px solid #000;
+  border-radius: 0 0 4px 4px;
+  cursor: pointer;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  padding-bottom: 8px;
+  transition: all 0.08s ease;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.3), 2px 4px 8px rgba(0, 0, 0, 0.6);
+}
+
+.piano-key-black:hover {
+  background: linear-gradient(180deg, #374151 0%, #1F2937 60%, #111827 100%);
+}
+
+.piano-key-black.active, .piano-key-black:active {
+  background: linear-gradient(180deg, #D97706 0%, #78350F 100%);
+  border-bottom-width: 1px;
+  transform: translateY(4px);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.6), 0 0 14px var(--accent-amber-glow);
+}
+
+/* Key Labels */
+.key-label-name {
+  font-family: var(--font-main);
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #1E293B;
+  pointer-events: none;
+}
+
+.piano-key-black .key-label-name {
+  color: #F8FAFC;
+  font-size: 0.65rem;
+}
+
+.piano-key-white.active .key-label-name {
+  color: #78350F;
+}
+
+.key-shortcut-tag {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 800;
+  background: rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  color: #475569;
+  padding: 1px 4px;
+  border-radius: 4px;
+  margin-top: 3px;
+  pointer-events: none;
+}
+
+.piano-key-black .key-shortcut-tag {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.25);
+  color: #CBD5E1;
+  font-size: 0.6rem;
+}
+
+/* Mini Piano Key (inside flashcards and quizzes) */
+.mini-piano {
+  display: flex;
+  position: relative;
+  user-select: none;
+  margin: 0 auto;
+  width: fit-content;
+}
+
+.mini-key-white {
+  width: 24px;
+  height: 72px;
+  background: #FFFFFF;
+  border: 1px solid #CBD5E1;
+  border-bottom: 3px solid #94A3B8;
+  border-radius: 0 0 3px 3px;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 4px;
+  font-size: 8px;
+  font-weight: 800;
+  color: #334155;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.mini-key-white.highlighted {
+  background: var(--accent-gold);
+  border-color: var(--accent-gold-dark);
+  color: #FFFFFF;
+  box-shadow: 0 0 10px var(--accent-amber-glow);
+}
+
+.mini-key-black {
+  position: absolute;
+  top: 0;
+  width: 14px;
+  height: 44px;
+  background: #0F172A;
+  border-radius: 0 0 2px 2px;
+  z-index: 2;
+  cursor: pointer;
+}
+
+.mini-key-black.highlighted {
+  background: var(--accent-gold);
+  box-shadow: 0 0 8px var(--accent-amber-glow);
+}
+
+/* Piano Keyboard Guide Map */
+.piano-keyboard-guide {
+  background: var(--bg-surface);
+  border: 1px solid var(--bg-card-border);
+  border-radius: var(--radius-md);
+  padding: 0.85rem 1.25rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.guide-title {
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+.guide-keys-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.guide-key {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-weight: 600;
+}
+
+kbd {
+  font-family: var(--font-mono);
+  background: var(--btn-bg);
+  border: 1px solid var(--btn-border);
+  border-bottom: 2px solid var(--badge-border);
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--accent-gold-dark);
+}
